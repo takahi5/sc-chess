@@ -10,11 +10,18 @@ export default function HomeScreen() {
         style={styles.background}
         imageStyle={styles.backgroundImage}>
         <View style={styles.content}>
-          <Link href="/play" asChild>
-            <TouchableOpacity activeOpacity={0.8} style={styles.primaryButton}>
-              <Text style={styles.primaryLabel}>Start Match</Text>
-            </TouchableOpacity>
-          </Link>
+          <View style={styles.buttonStack}>
+            <Link href="/play" asChild>
+              <TouchableOpacity activeOpacity={0.8} style={styles.primaryButton}>
+                <Text style={styles.primaryLabel}>Start Match</Text>
+              </TouchableOpacity>
+            </Link>
+            <Link href="/checkmate" asChild>
+              <TouchableOpacity activeOpacity={0.85} style={styles.secondaryButton}>
+                <Text style={styles.secondaryLabel}>Checkmate Challenge</Text>
+              </TouchableOpacity>
+            </Link>
+          </View>
         </View>
       </ImageBackground>
     </SafeAreaView>
@@ -40,6 +47,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
   },
+  buttonStack: {
+    alignItems: 'center',
+    gap: 16,
+  },
   primaryButton: {
     borderRadius: 14,
     paddingVertical: 16,
@@ -56,5 +67,24 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#0f172a',
     letterSpacing: 0.3,
+  },
+  secondaryButton: {
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    backgroundColor: 'rgba(15, 23, 42, 0.85)',
+    borderWidth: 1,
+    borderColor: '#facc15',
+    shadowColor: '#020617',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  secondaryLabel: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#facc15',
+    letterSpacing: 0.25,
   },
 });

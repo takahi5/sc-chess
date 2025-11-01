@@ -27,6 +27,8 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="play" />
+        <Stack.Screen name="checkmate/index" />
+        <Stack.Screen name="checkmate/[id]" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Chess } from 'chess.js';
 import type { Color, Move, PieceSymbol, Square } from 'chess.js';
 
@@ -28,18 +28,44 @@ export type GameStatus =
 
 export type LastMove = { from: Square; to: Square; san: string };
 
-export function useChessGame() {
-  const gameRef = useRef(new Chess());
-  const [fen, setFen] = useState<string>(() => gameRef.current.fen());
+type UseChessGameOptions = {
+  initialFen?: string;
+  onMove?: (move: Move, game: Chess) => void;
+};
+
+export function useChessGame(options?: UseChessGameOptions) {
+  const { initialFen, onMove } = options ?? {};
+  const initialFenRef = useRef<string | null>(initialFen ?? null);
+  const onMoveRef = useRef<UseChessGameOptions['onMove']>(onMove);
+
+  useEffect(() => {
+    onMoveRef.current = onMove;
+  }, [onMove]);
+
+  const gameRef = useRef<Chess | null>(null);
+
+  if (!gameRef.current) {
+    const game = new Chess();
+    if (initialFenRef.current) {
+      try {
+        game.load(initialFenRef.current);
+      } catch (error) {
+        console.warn('Failed to load FEN for chess game.', initialFenRef.current, error);
+      }
+    }
+    gameRef.current = game;
+  }
+
+  const [fen, setFen] = useState<string>(() => gameRef.current!.fen());
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
   const [candidateMoves, setCandidateMoves] = useState<Move[]>([]);
   const [lastMove, setLastMove] = useState<LastMove | null>(null);
 
-  const board = useMemo<BoardState>(() => gameRef.current.board(), [fen]);
+  const board = useMemo<BoardState>(() => gameRef.current!.board(), [fen]);
 
-  const turn = useMemo<Color>(() => gameRef.current.turn(), [fen]);
+  const turn = useMemo<Color>(() => gameRef.current!.turn(), [fen]);
 
-  const status = useMemo<GameStatus>(() => deriveStatus(gameRef.current), [fen]);
+  const status = useMemo<GameStatus>(() => deriveStatus(gameRef.current!), [fen]);
 
   const highlights = useMemo<HighlightMap>(() => {
     const map: HighlightMap = {};
@@ -72,7 +98,7 @@ export function useChessGame() {
 
         if (move) {
           const promotion = resolvePromotion(move);
-          const moveResult = gameRef.current.move({
+          const moveResult = gameRef.current!.move({
             from: move.from,
             to: move.to,
             promotion,
@@ -87,7 +113,8 @@ export function useChessGame() {
               to: moveResult.to as Square,
               san: moveResult.san,
             });
-            setFen(gameRef.current.fen());
+            setFen(gameRef.current!.fen());
+            onMoveRef.current?.(moveResult, gameRef.current!);
           }
           return;
         }
@@ -100,7 +127,7 @@ export function useChessGame() {
         return;
       }
 
-      const piece = gameRef.current.get(square);
+      const piece = gameRef.current!.get(square);
 
       if (!piece || piece.color !== turn) {
         setSelectedSquare(null);
@@ -108,17 +135,26 @@ export function useChessGame() {
         return;
       }
 
-      const moves = gameRef.current.moves({ square, verbose: true }) as Move[];
+      const moves = gameRef.current!.moves({ square, verbose: true }) as Move[];
 
       setSelectedSquare(moves.length ? square : null);
       setCandidateMoves(moves);
     },
-    [candidateMoves, selectedSquare, turn],
+    [candidateMoves, onMoveRef, selectedSquare, turn],
   );
 
   const resetGame = useCallback(() => {
-    gameRef.current.reset();
-    setFen(gameRef.current.fen());
+    if (initialFenRef.current) {
+      try {
+        gameRef.current!.load(initialFenRef.current);
+      } catch (error) {
+        console.warn('Failed to reset to initial FEN.', initialFenRef.current, error);
+        gameRef.current!.reset();
+      }
+    } else {
+      gameRef.current!.reset();
+    }
+    setFen(gameRef.current!.fen());
     setSelectedSquare(null);
     setCandidateMoves([]);
     setLastMove(null);

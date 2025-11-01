@@ -17,6 +17,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useChessGame } from '@/hooks/use-chess-game';
+import { deriveStatusLabel } from '@/utils/derive-status-label';
 
 export default function PlayScreen() {
   const { width, height } = useWindowDimensions();
@@ -284,30 +285,3 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
 });
-
-function deriveStatusLabel(
-  status: ReturnType<typeof useChessGame>['status'],
-  turn: ReturnType<typeof useChessGame>['turn'],
-) {
-  switch (status.phase) {
-    case 'playing':
-      return status.inCheck ? `${turn === 'w' ? 'White' : 'Black'} is in check` : '';
-    case 'checkmate':
-      return `${status.winner === 'w' ? 'White' : 'Black'} wins by checkmate`;
-    case 'stalemate':
-      return 'Draw by stalemate';
-    case 'draw':
-      switch (status.reason) {
-        case 'insufficient-material':
-          return 'Draw – insufficient material';
-        case 'threefold':
-          return 'Draw – threefold repetition';
-        case 'fifty-move':
-          return 'Draw – fifty-move rule';
-        default:
-          return 'Draw';
-      }
-    default:
-      return '';
-  }
-}
