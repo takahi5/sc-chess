@@ -6,6 +6,7 @@ import {
   Easing,
   Pressable,
   StyleSheet,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -108,7 +109,13 @@ export default function PlayScreen() {
               },
             ]}>
             <ThemedText style={styles.finishTitle}>{statusLabel}</ThemedText>
-            <ThemedText style={styles.finishSubtitle}>Tap Reset to start another match.</ThemedText>
+            <ThemedText style={styles.finishSubtitle}>Start another match when ready.</ThemedText>
+            <TouchableOpacity
+              activeOpacity={0.85}
+              style={styles.finishButton}
+              onPress={handleResetPress}>
+              <ThemedText style={styles.finishButtonLabel}>Play Again</ThemedText>
+            </TouchableOpacity>
           </Animated.View>
         </Animated.View>
         <View style={styles.header}>
@@ -206,6 +213,23 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#e2e8f0',
     textAlign: 'center',
+  },
+  finishButton: {
+    marginTop: 8,
+    paddingHorizontal: 28,
+    paddingVertical: 12,
+    borderRadius: 999,
+    backgroundColor: '#facc15',
+    shadowColor: '#fbbf24',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  finishButtonLabel: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0f172a',
   },
   header: {
     flexDirection: 'row',
