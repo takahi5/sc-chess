@@ -1,5 +1,5 @@
-import { memo, useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { memo, useEffect, useMemo, useRef } from 'react';
+import { Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
 import type { Square } from 'chess.js';
 
 import { ChessPiece } from '@/components/chess/chess-piece';
@@ -19,7 +19,26 @@ type ChessBoardProps = {
 export const ChessBoard = memo(
   ({ board, highlights, onSelectSquare, size, orientation }: ChessBoardProps) => {
     const tileSize = useMemo(() => size / 8, [size]);
-    const rotation = orientation === 'w' ? '0deg' : '180deg';
+    const pieceSize = useMemo(() => tileSize * 0.9, [tileSize]);
+    const rotationValue = useRef(new Animated.Value(orientation === 'w' ? 0 : 1));
+
+    useEffect(() => {
+      Animated.timing(rotationValue.current, {
+        toValue: orientation === 'w' ? 0 : 1,
+        duration: 320,
+        easing: Easing.inOut(Easing.quad),
+        useNativeDriver: true,
+      }).start();
+    }, [orientation]);
+
+    const rotation = useMemo(
+      () =>
+        rotationValue.current.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '180deg'],
+        }),
+      [],
+    );
 
     return (
       <View style={[styles.board, { width: size, height: size }]}> 
@@ -55,14 +74,17 @@ export const ChessBoard = memo(
                     <View style={styles.captureIndicator} pointerEvents="none" />
                   )}
                   {piece && (
-                    <View
-                      style={{
-                        width: tileSize * 0.9,
-                        height: tileSize * 0.9,
-                        transform: [{ rotate: rotation }],
-                      }}>
-                      <ChessPiece piece={piece} size={tileSize * 0.9} />
-                    </View>
+                    <Animated.View
+                      style={[
+                        styles.pieceContainer,
+                        {
+                          width: pieceSize,
+                          height: pieceSize,
+                          transform: [{ rotate: rotation }],
+                        },
+                      ]}>
+                      <ChessPiece piece={piece} size={pieceSize} />
+                    </Animated.View>
                   )}
                 </Pressable>
               );
@@ -126,5 +148,9 @@ const styles = StyleSheet.create({
   },
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
+  },
+  pieceContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
