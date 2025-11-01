@@ -1,29 +1,33 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Chess } from 'chess.js';
-import type { Color, Move, PieceSymbol, Square } from 'chess.js';
+import type { Color, Move, PieceSymbol, Square } from "chess.js";
+import { Chess } from "chess.js";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-type HighlightKind = 'selected' | 'move' | 'capture' | 'lastMove';
+type HighlightKind = "selected" | "move" | "capture" | "lastMove";
 
 export type HighlightMap = Record<Square, HighlightKind[]>;
 
-export type BoardState = ReturnType<Chess['board']>;
+export type BoardState = ReturnType<Chess["board"]>;
 
 export type GameStatus =
   | {
-      phase: 'playing';
+      phase: "playing";
       turn: Color;
       inCheck: boolean;
     }
   | {
-      phase: 'checkmate';
+      phase: "checkmate";
       winner: Color;
     }
   | {
-      phase: 'stalemate';
+      phase: "stalemate";
     }
   | {
-      phase: 'draw';
-      reason: 'insufficient-material' | 'threefold' | 'fifty-move' | 'repetition';
+      phase: "draw";
+      reason:
+        | "insufficient-material"
+        | "threefold"
+        | "fifty-move"
+        | "repetition";
     };
 
 export type LastMove = { from: Square; to: Square; san: string };
@@ -36,7 +40,7 @@ type UseChessGameOptions = {
 export function useChessGame(options?: UseChessGameOptions) {
   const { initialFen, onMove } = options ?? {};
   const initialFenRef = useRef<string | null>(initialFen ?? null);
-  const onMoveRef = useRef<UseChessGameOptions['onMove']>(onMove);
+  const onMoveRef = useRef<UseChessGameOptions["onMove"]>(onMove);
 
   useEffect(() => {
     onMoveRef.current = onMove;
@@ -50,7 +54,11 @@ export function useChessGame(options?: UseChessGameOptions) {
       try {
         game.load(initialFenRef.current);
       } catch (error) {
-        console.warn('Failed to load FEN for chess game.', initialFenRef.current, error);
+        console.warn(
+          "Failed to load FEN for chess game.",
+          initialFenRef.current,
+          error
+        );
       }
     }
     gameRef.current = game;
@@ -65,22 +73,32 @@ export function useChessGame(options?: UseChessGameOptions) {
 
   const turn = useMemo<Color>(() => gameRef.current!.turn(), [fen]);
 
-  const status = useMemo<GameStatus>(() => deriveStatus(gameRef.current!), [fen]);
+  const status = useMemo<GameStatus>(
+    () => deriveStatus(gameRef.current!),
+    [fen]
+  );
 
   const highlights = useMemo<HighlightMap>(() => {
-    const map: HighlightMap = {};
+    // Initialize all squares with empty arrays to ensure type safety
+    const map = Object.create(null) as HighlightMap;
+    for (const file of ["a", "b", "c", "d", "e", "f", "g", "h"] as const) {
+      for (let rank = 1 as const; rank <= 8; rank++) {
+        const square = `${file}${rank}` as Square;
+        map[square] = [];
+      }
+    }
 
     if (lastMove) {
-      map[lastMove.from] = [...(map[lastMove.from] ?? []), 'lastMove'];
-      map[lastMove.to] = [...(map[lastMove.to] ?? []), 'lastMove'];
+      map[lastMove.from] = [...(map[lastMove.from] ?? []), "lastMove"];
+      map[lastMove.to] = [...(map[lastMove.to] ?? []), "lastMove"];
     }
 
     if (selectedSquare) {
-      map[selectedSquare] = [...(map[selectedSquare] ?? []), 'selected'];
+      map[selectedSquare] = [...(map[selectedSquare] ?? []), "selected"];
     }
 
     candidateMoves.forEach((move) => {
-      const type: HighlightKind = move.captured ? 'capture' : 'move';
+      const type: HighlightKind = move.captured ? "capture" : "move";
       map[move.to as Square] = [...(map[move.to as Square] ?? []), type];
     });
 
@@ -93,7 +111,7 @@ export function useChessGame(options?: UseChessGameOptions) {
       if (selectedSquare) {
         const move = candidateMoves.find(
           (candidate) =>
-            candidate.from === selectedSquare && candidate.to === square,
+            candidate.from === selectedSquare && candidate.to === square
         );
 
         if (move) {
@@ -140,7 +158,7 @@ export function useChessGame(options?: UseChessGameOptions) {
       setSelectedSquare(moves.length ? square : null);
       setCandidateMoves(moves);
     },
-    [candidateMoves, onMoveRef, selectedSquare, turn],
+    [candidateMoves, onMoveRef, selectedSquare, turn]
   );
 
   const resetGame = useCallback(() => {
@@ -148,7 +166,11 @@ export function useChessGame(options?: UseChessGameOptions) {
       try {
         gameRef.current!.load(initialFenRef.current);
       } catch (error) {
-        console.warn('Failed to reset to initial FEN.', initialFenRef.current, error);
+        console.warn(
+          "Failed to reset to initial FEN.",
+          initialFenRef.current,
+          error
+        );
         gameRef.current!.reset();
       }
     } else {
@@ -174,29 +196,29 @@ export function useChessGame(options?: UseChessGameOptions) {
 
 function deriveStatus(game: Chess): GameStatus {
   if (game.isCheckmate()) {
-    const winner = game.turn() === 'w' ? 'b' : 'w';
-    return { phase: 'checkmate', winner };
+    const winner = game.turn() === "w" ? "b" : "w";
+    return { phase: "checkmate", winner };
   }
 
   if (game.isStalemate()) {
-    return { phase: 'stalemate' };
+    return { phase: "stalemate" };
   }
 
   if (game.isDraw()) {
-    const reason: GameStatus['reason'] =
+    const reason: Extract<GameStatus, { phase: "draw" }>["reason"] =
       game.isInsufficientMaterial()
-        ? 'insufficient-material'
+        ? "insufficient-material"
         : game.isThreefoldRepetition()
-        ? 'threefold'
+        ? "threefold"
         : game.isDrawByFiftyMoves()
-        ? 'fifty-move'
-        : 'repetition';
+        ? "fifty-move"
+        : "repetition";
 
-    return { phase: 'draw', reason };
+    return { phase: "draw", reason };
   }
 
   return {
-    phase: 'playing',
+    phase: "playing",
     turn: game.turn(),
     inCheck: game.isCheck(),
   };
@@ -207,5 +229,5 @@ function resolvePromotion(move: Move): PieceSymbol | undefined {
     return move.promotion;
   }
 
-  return move.flags.includes('p') ? 'q' : undefined;
+  return move.flags.includes("p") ? "q" : undefined;
 }
