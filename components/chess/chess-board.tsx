@@ -13,14 +13,16 @@ type ChessBoardProps = {
   highlights: HighlightMap;
   onSelectSquare: (square: Square) => void;
   size: number;
+  orientation: 'w' | 'b';
 };
 
 export const ChessBoard = memo(
-  ({ board, highlights, onSelectSquare, size }: ChessBoardProps) => {
+  ({ board, highlights, onSelectSquare, size, orientation }: ChessBoardProps) => {
     const tileSize = useMemo(() => size / 8, [size]);
+    const rotation = orientation === 'w' ? '0deg' : '180deg';
 
     return (
-      <View style={[styles.board, { width: size, height: size }]}>
+      <View style={[styles.board, { width: size, height: size }]}> 
         {board.map((row, rowIndex) => (
           <View key={`rank-${ranks[rowIndex]}`} style={styles.row}>
             {row.map((piece, columnIndex) => {
@@ -53,7 +55,12 @@ export const ChessBoard = memo(
                     <View style={styles.captureIndicator} pointerEvents="none" />
                   )}
                   {piece && (
-                    <View style={{ width: tileSize * 0.9, height: tileSize * 0.9 }}>
+                    <View
+                      style={{
+                        width: tileSize * 0.9,
+                        height: tileSize * 0.9,
+                        transform: [{ rotate: rotation }],
+                      }}>
                       <ChessPiece piece={piece} size={tileSize * 0.9} />
                     </View>
                   )}

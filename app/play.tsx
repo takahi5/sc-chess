@@ -104,6 +104,7 @@ export default function PlayScreen() {
             highlights={highlights}
             size={boardSize}
             onSelectSquare={selectSquare}
+            orientation={turn}
           />
         </View>
         <View style={styles.turnSlot}>
