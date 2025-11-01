@@ -16,6 +16,11 @@ export default function HomeScreen() {
                 <Text style={styles.primaryLabel}>Start Match</Text>
               </TouchableOpacity>
             </Link>
+            <Link href="/cpu" asChild>
+              <TouchableOpacity activeOpacity={0.85} style={styles.cpuButton}>
+                <Text style={styles.cpuLabel}>VS CPU</Text>
+              </TouchableOpacity>
+            </Link>
             <Link href="/checkmate" asChild>
               <TouchableOpacity activeOpacity={0.85} style={styles.secondaryButton}>
                 <Text style={styles.secondaryLabel}>Checkmate Challenge</Text>
@@ -66,6 +71,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#0f172a',
+    letterSpacing: 0.3,
+  },
+  cpuButton: {
+    borderRadius: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 34,
+    backgroundColor: '#38bdf8',
+    shadowColor: '#0f172a',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 14,
+    elevation: 5,
+  },
+  cpuLabel: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#082f49',
     letterSpacing: 0.3,
   },
   secondaryButton: {

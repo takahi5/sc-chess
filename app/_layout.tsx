@@ -27,6 +27,8 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="play" />
+        <Stack.Screen name="cpu/index" />
+        <Stack.Screen name="cpu/[difficulty]" />
         <Stack.Screen name="checkmate/index" />
         <Stack.Screen name="checkmate/[id]" />
       </Stack>

@@ -32,6 +32,12 @@ export type GameStatus =
 
 export type LastMove = { from: Square; to: Square; san: string };
 
+type MoveInput = {
+  from: Square;
+  to: Square;
+  promotion?: PieceSymbol;
+};
+
 type UseChessGameOptions = {
   initialFen?: string;
   onMove?: (move: Move, game: Chess) => void;
@@ -105,6 +111,36 @@ export function useChessGame(options?: UseChessGameOptions) {
     return map;
   }, [candidateMoves, lastMove, selectedSquare]);
 
+  const applyMove = useCallback(
+    (moveResult: Move) => {
+      setLastMove({
+        from: moveResult.from as Square,
+        to: moveResult.to as Square,
+        san: moveResult.san,
+      });
+      setFen(gameRef.current!.fen());
+      onMoveRef.current?.(moveResult, gameRef.current!);
+    },
+    []
+  );
+
+  const makeMove = useCallback(
+    ({ from, to, promotion }: MoveInput) => {
+      const moveResult = gameRef.current!.move({ from, to, promotion });
+
+      if (!moveResult) {
+        return false;
+      }
+
+      setSelectedSquare(null);
+      setCandidateMoves([]);
+      applyMove(moveResult);
+
+      return true;
+    },
+    [applyMove]
+  );
+
   const selectSquare = useCallback(
     (square: Square) => {
       // Attempt to complete a move if a target square is tapped.
@@ -116,25 +152,15 @@ export function useChessGame(options?: UseChessGameOptions) {
 
         if (move) {
           const promotion = resolvePromotion(move);
-          const moveResult = gameRef.current!.move({
-            from: move.from,
-            to: move.to,
+          const completed = makeMove({
+            from: move.from as Square,
+            to: move.to as Square,
             promotion,
           });
 
-          setSelectedSquare(null);
-          setCandidateMoves([]);
-
-          if (moveResult) {
-            setLastMove({
-              from: moveResult.from as Square,
-              to: moveResult.to as Square,
-              san: moveResult.san,
-            });
-            setFen(gameRef.current!.fen());
-            onMoveRef.current?.(moveResult, gameRef.current!);
+          if (completed) {
+            return;
           }
-          return;
         }
       }
 
@@ -158,7 +184,7 @@ export function useChessGame(options?: UseChessGameOptions) {
       setSelectedSquare(moves.length ? square : null);
       setCandidateMoves(moves);
     },
-    [candidateMoves, onMoveRef, selectedSquare, turn]
+    [candidateMoves, makeMove, selectedSquare, turn]
   );
 
   const resetGame = useCallback(() => {
@@ -183,6 +209,7 @@ export function useChessGame(options?: UseChessGameOptions) {
   }, []);
 
   return {
+    fen,
     board,
     turn,
     status,
@@ -190,6 +217,7 @@ export function useChessGame(options?: UseChessGameOptions) {
     selectedSquare,
     lastMove,
     selectSquare,
+    makeMove,
     resetGame,
   };
 }
