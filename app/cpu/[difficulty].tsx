@@ -22,9 +22,9 @@ import type { CpuDifficulty } from "@/utils/cpu-engine";
 import { deriveStatusLabel } from "@/utils/derive-status-label";
 
 const DIFFICULTY_LABELS: Record<CpuDifficulty, string> = {
-  easy: "初級",
-  medium: "中級",
-  hard: "上級",
+  easy: "Beginner",
+  medium: "Intermediate",
+  hard: "Advanced",
 };
 
 export default function CpuMatchScreen() {

@@ -16,18 +16,18 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 const DIFFICULTY_OPTIONS = [
   {
     key: "easy",
-    label: "初級",
-    description: "気軽に練習したい方向けのランダム手。",
+    label: "Beginner",
+    description: "Relaxed practice against mostly random moves.",
   },
   {
     key: "medium",
-    label: "中級",
-    description: "駒得を狙う基本的な思考を持ったCPU。",
+    label: "Intermediate",
+    description: "CPU that looks for simple material gains.",
   },
   {
     key: "hard",
-    label: "上級",
-    description: "先を読んで攻めてくる本気モード。",
+    label: "Advanced",
+    description: "Stronger engine that plans multiple moves ahead.",
   },
 ] as const;
 
@@ -68,7 +68,7 @@ export default function CpuDifficultyScreen() {
               <View style={styles.linkButtonPlaceholder} />
             </View>
             <ThemedText style={styles.description}>
-              難易度を選んでCPUと対戦しましょう。プレイヤーは常に白番です。
+              Choose a difficulty to challenge the CPU. You will always play as White.
             </ThemedText>
             <View style={styles.options}>
               {DIFFICULTY_OPTIONS.map((option) => (
