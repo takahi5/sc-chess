@@ -1,6 +1,14 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useMemo } from 'react';
-import { Alert, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import {
+  Alert,
+  Animated,
+  Easing,
+  Pressable,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ChessBoard } from '@/components/chess/chess-board';
@@ -45,6 +53,25 @@ export default function PlayScreen() {
   }, [resetGame]);
 
   const statusLabel = useMemo(() => deriveStatusLabel(status, turn), [status, turn]);
+  const isFinished = status.phase === 'checkmate' || status.phase === 'stalemate' || status.phase === 'draw';
+  const finishAnim = useRef(new Animated.Value(isFinished ? 1 : 0));
+  const finishScale = useMemo(
+    () =>
+      finishAnim.current.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0.9, 1],
+      }),
+    [],
+  );
+
+  useEffect(() => {
+    Animated.timing(finishAnim.current, {
+      toValue: isFinished ? 1 : 0,
+      duration: isFinished ? 320 : 180,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+  }, [isFinished]);
   const finishedOverlay = useMemo(() => {
     switch (status.phase) {
       case 'checkmate':
@@ -64,7 +91,26 @@ export default function PlayScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
       <ThemedView
-        style={[styles.container, finishedOverlay && { backgroundColor: finishedOverlay }]}>
+        style={[styles.container, finishedOverlay && { backgroundColor: finishedOverlay }]}> 
+        <Animated.View
+          pointerEvents={isFinished ? 'auto' : 'none'}
+          style={[
+            styles.finishOverlay,
+            {
+              opacity: finishAnim.current,
+            },
+          ]}>
+          <Animated.View
+            style={[
+              styles.finishCard,
+              {
+                transform: [{ scale: finishScale }],
+              },
+            ]}>
+            <ThemedText style={styles.finishTitle}>{statusLabel}</ThemedText>
+            <ThemedText style={styles.finishSubtitle}>Tap Reset to start another match.</ThemedText>
+          </Animated.View>
+        </Animated.View>
         <View style={styles.header}>
           <Pressable style={styles.linkButton} onPress={handleBackPress}>
             <ThemedText style={[styles.linkLabel, { color: controlTextColor }]}>Back</ThemedText>
@@ -131,6 +177,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 24,
     gap: 16,
+  },
+  finishOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(15, 23, 42, 0.75)',
+    zIndex: 10,
+  },
+  finishCard: {
+    paddingHorizontal: 32,
+    paddingVertical: 36,
+    borderRadius: 24,
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+    borderWidth: 2,
+    borderColor: '#facc15',
+    alignItems: 'center',
+    gap: 12,
+  },
+  finishTitle: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#facc15',
+    textAlign: 'center',
+  },
+  finishSubtitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#e2e8f0',
+    textAlign: 'center',
   },
   header: {
     flexDirection: 'row',
