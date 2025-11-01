@@ -1,5 +1,5 @@
-import { Link, useRouter } from "expo-router";
-import { useMemo } from "react";
+import { Link, useRouter, useFocusEffect } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import {
   ImageBackground,
   Pressable,
@@ -14,11 +14,13 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { CHECKMATE_CHALLENGES } from "@/constants/checkmate-challenges";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { getCompletedChallengeIds } from "@/storage/checkmate-progress";
 
 export default function CheckmateChallengeListScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const controlTextColor = colorScheme === "dark" ? "#e2e8f0" : "#334155";
+  const [completedIds, setCompletedIds] = useState<Set<number>>(new Set());
 
   const challenges = useMemo(
     () =>
@@ -26,6 +28,25 @@ export default function CheckmateChallengeListScreen() {
         (a, b) => a - b
       ),
     []
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      let mounted = true;
+
+      const loadCompleted = async () => {
+        const ids = await getCompletedChallengeIds();
+        if (mounted) {
+          setCompletedIds(new Set(ids));
+        }
+      };
+
+      void loadCompleted();
+
+      return () => {
+        mounted = false;
+      };
+    }, [])
   );
 
   return (
@@ -71,19 +92,24 @@ export default function CheckmateChallengeListScreen() {
                     params: { id: String(id) },
                   }}
                   asChild
+              >
+                <TouchableOpacity
+                  activeOpacity={0.85}
+                  style={styles.challengeButton}
                 >
-                  <TouchableOpacity
-                    activeOpacity={0.85}
-                    style={styles.challengeButton}
-                  >
+                  <View style={styles.challengeHeader}>
                     <ThemedText style={styles.challengeLabel}>
                       Challenge {id}
                     </ThemedText>
-                    <ThemedText style={styles.challengeSubLabel}>
-                      Mate in 1
-                    </ThemedText>
-                  </TouchableOpacity>
-                </Link>
+                    {completedIds.has(id) ? (
+                      <ThemedText style={styles.challengeCheck}>✅</ThemedText>
+                    ) : null}
+                  </View>
+                  <ThemedText style={styles.challengeSubLabel}>
+                    Mate in 1
+                  </ThemedText>
+                </TouchableOpacity>
+              </Link>
               ))}
             </ScrollView>
           </View>
@@ -164,11 +190,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4,
   },
+  challengeHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   challengeLabel: {
     fontSize: 18,
     fontWeight: "700",
     color: "#facc15",
     letterSpacing: 0.3,
+  },
+  challengeCheck: {
+    fontSize: 18,
+    lineHeight: 22,
   },
   challengeSubLabel: {
     fontSize: 13,

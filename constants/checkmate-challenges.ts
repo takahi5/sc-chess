@@ -55,4 +55,54 @@ export const CHECKMATE_CHALLENGES: CheckmateChallengeDefinition[] = [
     fen: '4r2r/4R3/p1P2bkn/5pPp/P6P/2q5/b2PN3/2B1K3 w - - 0 41',
     mates: ['Nf4#'],
   },
+  {
+    id: 11,
+    fen: 'rb1k4/n5R1/7N/p3pbrp/PPQ1PP2/8/8/1B2KN2 w - - 1 59',
+    mates: ['Qg8#'],
+  },
+  {
+    id: 12,
+    fen: 'rb1k4/n5R1/7N/4pbrp/PpQ1PP2/8/2B5/4KN2 w - - 0 60',
+    mates: ['Qg8#'],
+  },
+  {
+    id: 13,
+    fen: '4rb1r/p3p1p1/Pp1p1q1p/1Pp2B1k/2bP1P1P/4K3/3N2P1/6NR w - - 5 43',
+    mates: ['g4#'],
+  },
+  {
+    id: 14,
+    fen: '4nB2/3p1ppr/4k3/1N1b3p/5QPP/3P4/PR2PK2/5QN1 w - - 4 30',
+    mates: ['Nd4#', 'Qf5#'],
+  },
+  {
+    id: 15,
+    fen: '5B2/2np1ppr/4k3/1N1b3p/5QPP/3P4/P2RPK2/5QN1 w - - 6 31',
+    mates: ['Nxc7#', 'Nd4#', 'Qd6#', 'Qf5#'],
+  },
+  {
+    id: 16,
+    fen: '5B1r/2np1pp1/4k3/1N1b3p/6PP/3P1Q2/P2RPK2/5QN1 w - - 8 32',
+    mates: ['Qf5#'],
+  },
+  {
+    id: 17,
+    fen: '5B1r/2np1pp1/4k3/1N5p/6PP/1b1P1Q1N/P2RPK2/5Q2 w - - 10 33',
+    mates: ['Qf5#'],
+  },
+  {
+    id: 18,
+    fen: '5B2/2np1pp1/4k2r/1N4Pp/7P/1b1P1Q1N/P2RPK2/5Q2 w - - 1 34',
+    mates: ['Qe4#'],
+  },
+  {
+    id: 19,
+    fen: '8/2np1pp1/4k2r/1N4Pp/1Bb4P/3P1Q1N/P2RPK2/5Q2 w - - 3 35',
+    mates: ['Qe4#'],
+  },
+  {
+    id: 20,
+    fen: '8/2np1p2/4k1pr/6Pp/1Bb4P/2NP1Q1N/P2RPK2/5Q2 w - - 0 36',
+    mates: ['Qe4#', 'Qf6#'],
+  },
 ];

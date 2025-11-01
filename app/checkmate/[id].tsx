@@ -19,6 +19,7 @@ import { CHECKMATE_CHALLENGES } from '@/constants/checkmate-challenges';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useChessGame } from '@/hooks/use-chess-game';
 import { deriveStatusLabel } from '@/utils/derive-status-label';
+import { addCompletedChallengeId } from '@/storage/checkmate-progress';
 
 type ChallengeResult = 'idle' | 'success' | 'failure';
 
@@ -67,6 +68,7 @@ export default function CheckmateChallengeScreen() {
     colorScheme === 'dark' ? 'rgba(248, 113, 113, 0.18)' : 'rgba(254, 226, 226, 0.45)';
 
   const successAnim = useRef(new Animated.Value(result === 'success' ? 1 : 0));
+  const completionLoggedRef = useRef(false);
   const successScale = useMemo(
     () =>
       successAnim.current.interpolate({
@@ -85,6 +87,13 @@ export default function CheckmateChallengeScreen() {
     }).start();
   }, [result]);
 
+  useEffect(() => {
+    if (result === 'success' && challenge && !completionLoggedRef.current) {
+      completionLoggedRef.current = true;
+      void addCompletedChallengeId(challenge.id);
+    }
+  }, [challenge, result]);
+
   const handleBackPress = useCallback(() => {
     router.back();
   }, [router]);
@@ -92,6 +101,7 @@ export default function CheckmateChallengeScreen() {
   const handleReset = useCallback(() => {
     resetGame();
     setResult('idle');
+    completionLoggedRef.current = false;
   }, [resetGame]);
 
   const handleTryAgain = useCallback(() => {
@@ -102,6 +112,7 @@ export default function CheckmateChallengeScreen() {
     setResult('idle');
     resetGame();
     router.back();
+    completionLoggedRef.current = false;
   }, [resetGame, router]);
 
   const handleSelectSquare = useCallback(
