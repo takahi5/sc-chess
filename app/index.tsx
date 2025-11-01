@@ -1,22 +1,22 @@
 import { Link } from 'expo-router';
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <View style={styles.hero}>
-          <Text style={styles.title}>SC Chess</Text>
-          <Text style={styles.subtitle}>
-            Play head-to-head on a single device. Tap start to begin a fresh match.
-          </Text>
+      <ImageBackground
+        source={require('@/assets/images/home.png')}
+        resizeMode="cover"
+        style={styles.background}
+        imageStyle={styles.backgroundImage}>
+        <View style={styles.content}>
+          <Link href="/play" asChild>
+            <TouchableOpacity activeOpacity={0.8} style={styles.primaryButton}>
+              <Text style={styles.primaryLabel}>Start Match</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
-        <Link href="/play" asChild>
-          <Pressable style={styles.primaryButton}>
-            <Text style={styles.primaryLabel}>Start Match</Text>
-          </Pressable>
-        </Link>
-      </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -24,40 +24,32 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#0f172a',
+    backgroundColor: '#000',
   },
-  container: {
+  background: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-    justifyContent: 'space-between',
-    backgroundColor: '#0f172a',
+    justifyContent: 'flex-end',
+    position: 'relative',
   },
-  hero: {
-    gap: 12,
-    marginTop: 48,
+  backgroundImage: {
+    resizeMode: 'cover',
   },
-  title: {
-    fontSize: 36,
-    fontWeight: '700',
-    color: '#f8fafc',
-  },
-  subtitle: {
-    fontSize: 18,
-    lineHeight: 26,
-    color: '#cbd5f5',
-  },
-  primaryButton: {
-    borderRadius: 16,
-    paddingVertical: 18,
+  content: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#38bdf8',
-    shadowColor: '#0f172a',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    elevation: 6,
+    padding: 24,
+  },
+  primaryButton: {
+    borderRadius: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 34,
+    backgroundColor: '#facc15',
+    shadowColor: '#78350f',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 14,
+    elevation: 5,
   },
   primaryLabel: {
     fontSize: 18,
