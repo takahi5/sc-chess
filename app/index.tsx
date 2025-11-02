@@ -1,4 +1,5 @@
 import { Link } from 'expo-router';
+import { FontAwesome, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
@@ -12,18 +13,27 @@ export default function HomeScreen() {
         <View style={styles.content}>
           <View style={styles.buttonStack}>
             <Link href="/play" asChild>
-              <TouchableOpacity activeOpacity={0.8} style={styles.primaryButton}>
-                <Text style={styles.primaryLabel}>Start Match</Text>
+              <TouchableOpacity activeOpacity={0.85} style={styles.actionButton}>
+                <View style={styles.buttonContent}>
+                  <FontAwesome name="play" size={20} color="#0f172a" />
+                  <Text style={styles.buttonLabel}>Start Match</Text>
+                </View>
               </TouchableOpacity>
             </Link>
             <Link href="/cpu" asChild>
-              <TouchableOpacity activeOpacity={0.85} style={styles.cpuButton}>
-                <Text style={styles.cpuLabel}>VS CPU</Text>
+              <TouchableOpacity activeOpacity={0.85} style={styles.actionButton}>
+                <View style={styles.buttonContent}>
+                  <MaterialCommunityIcons name="robot" size={20} color="#0f172a" />
+                  <Text style={styles.buttonLabel}>VS CPU</Text>
+                </View>
               </TouchableOpacity>
             </Link>
             <Link href="/checkmate" asChild>
-              <TouchableOpacity activeOpacity={0.85} style={styles.secondaryButton}>
-                <Text style={styles.secondaryLabel}>Checkmate Challenge</Text>
+              <TouchableOpacity activeOpacity={0.85} style={styles.actionButton}>
+                <View style={styles.buttonContent}>
+                  <FontAwesome5 name="chess-king" size={20} color="#0f172a" />
+                  <Text style={styles.buttonLabel}>Checkmate Challenge</Text>
+                </View>
               </TouchableOpacity>
             </Link>
           </View>
@@ -56,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
   },
-  primaryButton: {
+  actionButton: {
     borderRadius: 14,
     paddingVertical: 16,
     paddingHorizontal: 34,
@@ -66,47 +76,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 14,
     elevation: 5,
+    width: 300,
+    maxWidth: '100%',
   },
-  primaryLabel: {
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  buttonLabel: {
     fontSize: 18,
     fontWeight: '700',
     color: '#0f172a',
     letterSpacing: 0.3,
-  },
-  cpuButton: {
-    borderRadius: 14,
-    paddingVertical: 16,
-    paddingHorizontal: 34,
-    backgroundColor: '#38bdf8',
-    shadowColor: '#0f172a',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 14,
-    elevation: 5,
-  },
-  cpuLabel: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#082f49',
-    letterSpacing: 0.3,
-  },
-  secondaryButton: {
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 30,
-    backgroundColor: 'rgba(15, 23, 42, 0.85)',
-    borderWidth: 1,
-    borderColor: '#facc15',
-    shadowColor: '#020617',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 4,
-  },
-  secondaryLabel: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#facc15',
-    letterSpacing: 0.25,
   },
 });

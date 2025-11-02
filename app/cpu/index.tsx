@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 24,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     backgroundColor: "rgba(255, 255, 255, 0.7)",
   },
   contentCard: {
