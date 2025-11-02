@@ -13,13 +13,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { CHECKMATE_CHALLENGES } from "@/constants/checkmate-challenges";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import { getCompletedChallengeIds } from "@/storage/checkmate-progress";
 
 export default function CheckmateChallengeListScreen() {
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const controlTextColor = colorScheme === "dark" ? "#e2e8f0" : "#334155";
+  const headerTextColor = "#0f172a";
   const [completedIds, setCompletedIds] = useState<Set<number>>(new Set());
 
   const challenges = useMemo(
@@ -69,12 +67,14 @@ export default function CheckmateChallengeListScreen() {
                 onPress={() => router.back()}
               >
                 <ThemedText
-                  style={[styles.linkLabel, { color: controlTextColor }]}
+                  style={[styles.linkLabel, { color: headerTextColor }]}
                 >
                   Back
                 </ThemedText>
               </Pressable>
-              <ThemedText type="subtitle">Checkmate Challenge</ThemedText>
+              <ThemedText type="subtitle" style={styles.headerTitle}>
+                Checkmate Challenge
+              </ThemedText>
               <View style={styles.linkButtonPlaceholder} />
             </View>
             <ThemedText style={styles.description}>
@@ -146,6 +146,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  headerTitle: {
+    color: "#0f172a",
+  },
   linkButton: {
     paddingHorizontal: 8,
     paddingVertical: 6,
@@ -162,6 +165,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     lineHeight: 22,
+    color: "#0f172a",
   },
   grid: {
     flex: 1,

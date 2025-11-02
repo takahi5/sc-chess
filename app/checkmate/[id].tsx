@@ -34,6 +34,7 @@ export default function CheckmateChallengeScreen() {
   const [result, setResult] = useState<ChallengeResult>('idle');
   const colorScheme = useColorScheme();
   const turnLabelColor = '#166534';
+  const headerTextColor = '#0f172a';
 
   const handleMove = useCallback(
     (_: Move, game: Chess) => {
@@ -61,7 +62,6 @@ export default function CheckmateChallengeScreen() {
     return Math.max(constrained, 260);
   }, [height, width]);
 
-  const controlTextColor = colorScheme === 'dark' ? '#e2e8f0' : '#334155';
   const successTint =
     colorScheme === 'dark' ? 'rgba(148, 163, 184, 0.25)' : 'rgba(203, 213, 225, 0.55)';
   const failureTint =
@@ -199,11 +199,13 @@ export default function CheckmateChallengeScreen() {
         )}
         <View style={styles.header}>
           <Pressable style={styles.linkButton} onPress={handleBackPress}>
-            <ThemedText style={[styles.linkLabel, { color: controlTextColor }]}>Back</ThemedText>
+            <ThemedText style={[styles.linkLabel, { color: headerTextColor }]}>Back</ThemedText>
           </Pressable>
-          <ThemedText type="subtitle">Challenge {challenge.id}</ThemedText>
+          <ThemedText type="subtitle" style={styles.headerTitle}>
+            Challenge {challenge.id}
+          </ThemedText>
           <Pressable style={styles.linkButton} onPress={handleReset}>
-            <ThemedText style={[styles.linkLabel, { color: controlTextColor }]}>Reset</ThemedText>
+            <ThemedText style={[styles.linkLabel, { color: headerTextColor }]}>Reset</ThemedText>
           </Pressable>
         </View>
         <View style={styles.descriptionBlock}>
@@ -386,6 +388,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  headerTitle: {
+    color: '#0f172a',
   },
   linkButton: {
     paddingHorizontal: 8,

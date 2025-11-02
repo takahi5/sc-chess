@@ -16,8 +16,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ChessBoard } from "@/components/chess/chess-board";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useCpuChessGame } from "@/hooks/use-cpu-chess-game";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import type { CpuDifficulty } from "@/utils/cpu-engine";
 import { deriveStatusLabel } from "@/utils/derive-status-label";
 
@@ -51,8 +51,8 @@ export default function CpuMatchScreen() {
     isCpuThinking,
   } = useCpuChessGame({ difficulty: effectiveDifficulty });
   const colorScheme = useColorScheme();
-  const controlTextColor = colorScheme === "dark" ? "#e2e8f0" : "#334155";
   const turnLabelColor = "#166534";
+  const headerTextColor = "#0f172a";
 
   const handleBackPress = useCallback(() => {
     Alert.alert("Leave match?", "Going back will forfeit the current game.", [
@@ -157,15 +157,15 @@ export default function CpuMatchScreen() {
         </Animated.View>
         <View style={styles.header}>
           <Pressable style={styles.linkButton} onPress={handleBackPress}>
-            <ThemedText style={[styles.linkLabel, { color: controlTextColor }]}>
+            <ThemedText style={[styles.linkLabel, { color: headerTextColor }]}>
               Back
             </ThemedText>
           </Pressable>
-          <ThemedText type="subtitle">
+          <ThemedText type="subtitle" style={styles.headerTitle}>
             CPU Match · {DIFFICULTY_LABELS[effectiveDifficulty]}
           </ThemedText>
           <Pressable style={styles.linkButton} onPress={handleResetPress}>
-            <ThemedText style={[styles.linkLabel, { color: controlTextColor }]}>
+            <ThemedText style={[styles.linkLabel, { color: headerTextColor }]}>
               Reset
             </ThemedText>
           </Pressable>
@@ -304,6 +304,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  headerTitle: {
+    color: "#0f172a",
+  },
   linkButton: {
     paddingHorizontal: 8,
     paddingVertical: 6,
@@ -321,6 +324,7 @@ const styles = StyleSheet.create({
   statusLabel: {
     fontSize: 16,
     fontWeight: "600",
+    color: "#0f172a",
   },
   statusLabelCheckmate: {
     color: "#dc2626",
@@ -333,6 +337,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     opacity: 0,
+    color: "#0f172a",
   },
   boardContainer: {
     alignSelf: "center",
