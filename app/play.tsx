@@ -26,7 +26,10 @@ export default function PlayScreen() {
     return Math.max(constrained, 260);
   }, [height, width]);
   const colorScheme = useColorScheme();
-  const controlTextColor = colorScheme === 'dark' ? '#e2e8f0' : '#334155';
+  const headerTextColors = useMemo(
+    () => ({ light: '#0f172a', dark: '#f8fafc' }),
+    [],
+  );
   const turnLabelColor = '#166534';
   const router = useRouter();
 
@@ -121,11 +124,26 @@ export default function PlayScreen() {
         </Animated.View>
         <View style={styles.header}>
           <Pressable style={styles.linkButton} onPress={handleBackPress}>
-            <ThemedText style={[styles.linkLabel, { color: controlTextColor }]}>Back</ThemedText>
+            <ThemedText
+              style={styles.linkLabel}
+              lightColor={headerTextColors.light}
+              darkColor={headerTextColors.dark}>
+              Back
+            </ThemedText>
           </Pressable>
-          <ThemedText type="subtitle">Local Match</ThemedText>
+          <ThemedText
+            type="subtitle"
+            lightColor={headerTextColors.light}
+            darkColor={headerTextColors.dark}>
+            Local Match
+          </ThemedText>
           <Pressable style={styles.linkButton} onPress={handleResetPress}>
-            <ThemedText style={[styles.linkLabel, { color: controlTextColor }]}>Reset</ThemedText>
+            <ThemedText
+              style={styles.linkLabel}
+              lightColor={headerTextColors.light}
+              darkColor={headerTextColors.dark}>
+              Reset
+            </ThemedText>
           </Pressable>
         </View>
         <View style={styles.statusContainer}>

@@ -34,7 +34,10 @@ export default function CheckmateChallengeScreen() {
   const [result, setResult] = useState<ChallengeResult>('idle');
   const colorScheme = useColorScheme();
   const turnLabelColor = '#166534';
-  const headerTextColor = '#0f172a';
+  const headerTextColors = useMemo(
+    () => ({ light: '#0f172a', dark: '#f8fafc' }),
+    [],
+  );
 
   const handleMove = useCallback(
     (_: Move, game: Chess) => {
@@ -199,13 +202,26 @@ export default function CheckmateChallengeScreen() {
         )}
         <View style={styles.header}>
           <Pressable style={styles.linkButton} onPress={handleBackPress}>
-            <ThemedText style={[styles.linkLabel, { color: headerTextColor }]}>Back</ThemedText>
+            <ThemedText
+              style={styles.linkLabel}
+              lightColor={headerTextColors.light}
+              darkColor={headerTextColors.dark}>
+              Back
+            </ThemedText>
           </Pressable>
-          <ThemedText type="subtitle" style={styles.headerTitle}>
+          <ThemedText
+            type="subtitle"
+            lightColor={headerTextColors.light}
+            darkColor={headerTextColors.dark}>
             Challenge {challenge.id}
           </ThemedText>
           <Pressable style={styles.linkButton} onPress={handleReset}>
-            <ThemedText style={[styles.linkLabel, { color: headerTextColor }]}>Reset</ThemedText>
+            <ThemedText
+              style={styles.linkLabel}
+              lightColor={headerTextColors.light}
+              darkColor={headerTextColors.dark}>
+              Reset
+            </ThemedText>
           </Pressable>
         </View>
         <View style={styles.descriptionBlock}>
@@ -388,9 +404,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  headerTitle: {
-    color: '#0f172a',
   },
   linkButton: {
     paddingHorizontal: 8,

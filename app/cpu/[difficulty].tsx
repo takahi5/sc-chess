@@ -52,7 +52,10 @@ export default function CpuMatchScreen() {
   } = useCpuChessGame({ difficulty: effectiveDifficulty });
   const colorScheme = useColorScheme();
   const turnLabelColor = "#166534";
-  const headerTextColor = "#0f172a";
+  const headerTextColors = useMemo(
+    () => ({ light: "#0f172a", dark: "#f8fafc" }),
+    []
+  );
 
   const handleBackPress = useCallback(() => {
     Alert.alert("Leave match?", "Going back will forfeit the current game.", [
@@ -157,15 +160,27 @@ export default function CpuMatchScreen() {
         </Animated.View>
         <View style={styles.header}>
           <Pressable style={styles.linkButton} onPress={handleBackPress}>
-            <ThemedText style={[styles.linkLabel, { color: headerTextColor }]}>
+            <ThemedText
+              style={styles.linkLabel}
+              lightColor={headerTextColors.light}
+              darkColor={headerTextColors.dark}
+            >
               Back
             </ThemedText>
           </Pressable>
-          <ThemedText type="subtitle" style={styles.headerTitle}>
+          <ThemedText
+            type="subtitle"
+            lightColor={headerTextColors.light}
+            darkColor={headerTextColors.dark}
+          >
             CPU Match · {DIFFICULTY_LABELS[effectiveDifficulty]}
           </ThemedText>
           <Pressable style={styles.linkButton} onPress={handleResetPress}>
-            <ThemedText style={[styles.linkLabel, { color: headerTextColor }]}>
+            <ThemedText
+              style={styles.linkLabel}
+              lightColor={headerTextColors.light}
+              darkColor={headerTextColors.dark}
+            >
               Reset
             </ThemedText>
           </Pressable>
@@ -304,9 +319,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  headerTitle: {
-    color: "#0f172a",
-  },
   linkButton: {
     paddingHorizontal: 8,
     paddingVertical: 6,
@@ -324,7 +336,6 @@ const styles = StyleSheet.create({
   statusLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#0f172a",
   },
   statusLabelCheckmate: {
     color: "#dc2626",
@@ -337,7 +348,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     opacity: 0,
-    color: "#0f172a",
   },
   boardContainer: {
     alignSelf: "center",

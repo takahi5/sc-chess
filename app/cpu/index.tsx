@@ -1,5 +1,4 @@
 import { Link, useRouter } from "expo-router";
-import { useMemo } from "react";
 import {
   ImageBackground,
   Pressable,
@@ -11,7 +10,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 
 const DIFFICULTY_OPTIONS = [
   {
@@ -33,11 +31,7 @@ const DIFFICULTY_OPTIONS = [
 
 export default function CpuDifficultyScreen() {
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const controlTextColor = useMemo(
-    () => (colorScheme === "dark" ? "#e2e8f0" : "#334155"),
-    [colorScheme]
-  );
+  const controlTextColor = "#0f172a";
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
@@ -59,12 +53,20 @@ export default function CpuDifficultyScreen() {
                 onPress={() => router.back()}
               >
                 <ThemedText
-                  style={[styles.linkLabel, { color: controlTextColor }]}
+                  style={styles.linkLabel}
+                  lightColor={controlTextColor}
+                  darkColor={controlTextColor}
                 >
                   Back
                 </ThemedText>
               </Pressable>
-              <ThemedText type="subtitle">VS CPU</ThemedText>
+              <ThemedText
+                type="subtitle"
+                lightColor={controlTextColor}
+                darkColor={controlTextColor}
+              >
+                VS CPU
+              </ThemedText>
               <View style={styles.linkButtonPlaceholder} />
             </View>
             <ThemedText style={styles.description}>

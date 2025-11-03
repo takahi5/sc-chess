@@ -67,12 +67,19 @@ export default function CheckmateChallengeListScreen() {
                 onPress={() => router.back()}
               >
                 <ThemedText
-                  style={[styles.linkLabel, { color: headerTextColor }]}
+                  style={styles.linkLabel}
+                  lightColor={headerTextColor}
+                  darkColor={headerTextColor}
                 >
                   Back
                 </ThemedText>
               </Pressable>
-              <ThemedText type="subtitle" style={styles.headerTitle}>
+              <ThemedText
+                type="subtitle"
+                lightColor={headerTextColor}
+                darkColor={headerTextColor}
+                style={styles.headerTitle}
+              >
                 Checkmate Challenge
               </ThemedText>
               <View style={styles.linkButtonPlaceholder} />
